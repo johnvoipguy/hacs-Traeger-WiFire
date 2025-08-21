@@ -86,5 +86,5 @@ State | Description
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire.svg?style=for-the-badge
 [releases]: https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire/releases
-[license-shield]: https://img.shields.io/github/license/johnvoipguy/hacs-traeger-wifire
+[license-shield]: https://img.shields.io/github/license/johnvoipguy/hacs-traeger-wifire.svg?style=for-the-badge
 [LICENSE]: https://github.com/johnvoipguy/hacs-Traeger-WiFire/blob/main/LICENSE
