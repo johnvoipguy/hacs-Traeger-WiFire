@@ -1,0 +1,9 @@
+rules:
+  # Bronze (mandatory)
+  config-flow: done
+  entity-unique-id: done
+  devices: done
+  iot-class: done
+  diagnostics:
+    status: exempt
+    comment: Exposed via sensors only
