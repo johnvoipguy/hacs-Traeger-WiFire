@@ -1,7 +1,7 @@
 # HACS Traeger WiFire
 Home Assistant Traeger WiFire Integration 
 
-![Latest release](https://img.shields.io/github/v/release/johnvoipguy/hasshacs-Traeger-WiFire)
+![Latest release](https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire)
 [![MIT License][license-shield]][LICENSE]
 [![hacs][hacsbadge]][hacs]
 
