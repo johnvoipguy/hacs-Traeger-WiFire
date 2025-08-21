@@ -1,8 +1,4 @@
-# Version: 1.0.13-grok-is-a-fuckup
-# Revision: 2025-08-19 00:39:00
-"""
-Traeger API client for Home Assistant.
-"""
+"""Traeger API client for Home Assistant."""
 
 import asyncio
 import datetime
@@ -162,18 +158,7 @@ class traeger:
         )
 
     async def _on_mqtt_message(self, grill_id: str, payload: dict) -> None:
-        """Handle incoming MQTT and push to coordinator."""
-        try:
-            if topic.startswith("prod/thing/update/"):
-                grill_id = topic.split("/")[-1]
-                state = json.loads(payload.decode("utf-8"))
-                self.grill_status[grill_id] = state
-                # Push snapshot so coordinator consumers refresh
-                if self._coordinator is not None:
-                    # Update your existing client cache
-                    self._coordinator.async_set_updated_data(dict(self.grill_status))
-        except Exception:
-            _LOGGER.exception("Failed to process MQTT update")
+        """Deprecated; use _handle_mqtt_update instead."""
         self._last_mqtt_rx[grill_id] = time.monotonic()
 
     async def trigger_mqtt_refresh(
@@ -413,7 +398,7 @@ class traeger:
             return
         self._last_syncmain_time = current_time
         _LOGGER.debug("Call_Later SyncMain CreatingTask for async Main.")
-        self.hass.create_task(self.main())
+        self.hass.async_create_task(self.main())
 
     async def main(self):
         _LOGGER.debug(f"Current Main Loop Time: {time.time()}")

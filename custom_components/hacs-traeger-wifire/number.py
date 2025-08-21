@@ -42,15 +42,6 @@ class TraegerNumber(TraegerBaseEntity, NumberEntity):
         self._attr_native_max_value = 1440  # 24 hours in minutes
         self._attr_native_step = 1
         self._attr_native_unit_of_measurement = "min"
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, grill_id)},
-            "name": "Lord of The Smoke Rings",
-            "manufacturer": "Traeger",
-            "model": "Traeger Grill",
-            "sw_version": client.get_state_for_device(grill_id)
-            .get("details", {})
-            .get("fw_ver", "N/A"),
-        }
         _LOGGER.debug(f"Initialized number {self.entity_id} for grill {grill_id}")
 
     @property

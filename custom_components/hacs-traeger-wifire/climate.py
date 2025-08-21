@@ -99,15 +99,6 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
         self._attr_unique_id = f"{grill_id}_climate"
         self.entity_id = f"climate.{slugify(grill_id)}_climate"
         self._attr_entity_registry_visible_default = True
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, grill_id)},
-            "name": "Lord of The Smoke Rings",
-            "manufacturer": "Traeger",
-            "model": "Traeger Grill",
-            "sw_version": client.get_state_for_device(grill_id)
-            .get("details", {})
-            .get("fw_ver", "N/A"),
-        }
         _LOGGER.debug(f"Initialized climate {self.entity_id} for grill {grill_id}")
 
     async def async_added_to_hass(self) -> None:
@@ -249,15 +240,6 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
         self._attr_unique_id = f"{grill_id}_probe_{channel}"
         self.entity_id = f"climate.{slugify(grill_id)}_probe_{slugify(channel)}"
         self._attr_entity_registry_visible_default = True
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, grill_id)},
-            "name": "Lord of The Smoke Rings",
-            "manufacturer": "Traeger",
-            "model": "Traeger Grill",
-            "sw_version": client.get_state_for_device(grill_id)
-            .get("details", {})
-            .get("fw_ver", "N/A"),
-        }
         _LOGGER.debug(f"Initialized probe {self.entity_id} for grill {grill_id}")
 
     async def async_added_to_hass(self) -> None:

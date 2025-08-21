@@ -9,8 +9,6 @@
   "integration_type": "device",
   "iot_class": "cloud_push",
   "quality_scale": "bronze",
-  "requirements": [
-    "aiomqtt>=2.1.0,<3"
-  ],
+  "requirements": ["aiomqtt>=2.1.0,<3"],
   "dependencies": []
 }

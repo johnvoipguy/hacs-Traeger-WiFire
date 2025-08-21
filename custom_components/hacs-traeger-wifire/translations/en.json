@@ -1,0 +1,32 @@
+{
+    "config": {        
+        "step": {
+            "user": {
+                "title": "Traeger WiFIRE",
+                "description": "Sign in with your Traeger account",
+                "data": {
+                    "username": "Email",
+                    "password": "Password"
+                }
+            }
+        },
+        "error": {
+            "auth": "Invalid username or password"
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single configuration of Traeger is allowed."
+        }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "sensor": "Sensors enabled",
+                    "climate": "Climate entity enabled",
+                    "switch": "Switch entity enabled",
+                    "number": "Number entity enabled"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Traeger WiFIRE",
+        "description": "Sign in with your Traeger account",
+        "data": {
+          "username": "Email",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "auth": "Invalid username or password"
+    }
+  }
+}
