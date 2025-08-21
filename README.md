@@ -8,7 +8,7 @@ Home Assistant Traeger WiFire Integration
 _Component to integrate with [Traeger WiFire Grills][traeger]._
 
 
-***This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes requirements were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance***
+***This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance***
 
 **This component will set up the following platforms:**
 
