@@ -87,4 +87,4 @@ State | Description
 [releases-shield]: https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire.svg?style=for-the-badge
 [releases]: https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire/releases
 [license-shield]: https://img.shields.io/github/license/johnvoipguy/hacs-Traeger-WiFire
-[license-url]: https://github.com/johnvoipguy/hacs-Traeger-WiFire/blob/main/LICENSE
+[LICENSE]: https://github.com/johnvoipguy/hacs-Traeger-WiFire/blob/main/LICENSE
