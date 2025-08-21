@@ -1,0 +1,12 @@
+{
+  "domain": "traeger",
+  "name": "Traeger",
+  "documentation": "https://github.com/johnvoipguy/hass_traeger",
+  "issue_tracker": "https://github.com/johnvoipguy/hass_traeger/issues",
+  "iot_class": "cloud_push",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": ["@johnvoipguy"],
+  "requirements": ["aiomqtt>=0.2.0"],
+  "version": "2025.08.16"
+  }
