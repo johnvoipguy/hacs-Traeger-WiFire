@@ -1,0 +1,27 @@
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+exclude = [".venv", ".git", ".tox", "docs", "venv", "bin", "lib", "deps", "build"]
+
+[tool.ruff.lint]
+ignore = ["E501", "W503", "E203", "D202", "W504"]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components.traeger"]
+force-sort-within-sections = true
+combine-as-imports = true
+```# filepath: /workspaces/haas-core/pyproject.toml
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+exclude = [".venv", ".git", ".tox", "docs", "venv", "bin", "lib", "deps", "build"]
+
+[tool.ruff.lint]
+ignore = ["E501", "W503", "E203", "D202", "W504"]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components.traeger"]
+force-sort-within-sections = true
+combine-as-imports = true
