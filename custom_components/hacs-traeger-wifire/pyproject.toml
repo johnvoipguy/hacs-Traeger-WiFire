@@ -11,7 +11,7 @@ select = ["E", "F", "W", "I"]
 known-first-party = ["custom_components.traeger"]
 force-sort-within-sections = true
 combine-as-imports = true
-```# filepath: /workspaces/haas-core/pyproject.toml
+
 [tool.ruff]
 line-length = 88
 target-version = "py313"
