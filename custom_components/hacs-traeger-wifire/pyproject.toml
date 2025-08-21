@@ -4,7 +4,7 @@ target-version = "py313"
 exclude = [".venv", ".git", ".tox", "docs", "venv", "bin", "lib", "deps", "build"]
 
 [tool.ruff.lint]
-ignore = ["E501", "E203", "D202", "W504"]
+ignore = ["E501", "E203", "D202"]
 select = ["E", "F", "W", "I"]
 
 [tool.ruff.lint.isort]
