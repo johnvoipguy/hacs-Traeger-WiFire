@@ -1,12 +1,8 @@
-# Version: 1.0.0
-# Revision: 2025-08-18 17:07:00
 """Climate platform for Traeger."""
 
 from __future__ import annotations
 
 import logging
-from typing import Any
-
 from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
@@ -20,14 +16,14 @@ from homeassistant.util import slugify
 from .const import (
     DOMAIN,
     GRILL_MODE_OFFLINE,
-    GRILL_MODE_COOL_DOWN,
+#   GRILL_MODE_COOL_DOWN,
     GRILL_MODE_CUSTOM_COOK,
     GRILL_MODE_MANUAL_COOK,
     GRILL_MODE_PREHEATING,
     GRILL_MODE_IGNITING,
-    GRILL_MODE_IDLE,
-    GRILL_MODE_SLEEPING,
-    GRILL_MODE_SHUTDOWN,
+#    GRILL_MODE_IDLE,
+#    GRILL_MODE_SLEEPING,
+#    GRILL_MODE_SHUTDOWN,
     GRILL_MIN_TEMP_C,
     GRILL_MIN_TEMP_F,
     PROBE_PRESET_MODES,
