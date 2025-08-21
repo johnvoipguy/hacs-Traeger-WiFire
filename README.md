@@ -10,7 +10,7 @@ _Component to integrate with [Traeger WiFire Grills][traeger]._
 
 ***This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes requirements were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance***
 
-**This component will set up the following platforms.**
+**This component will set up the following platforms:**
 
 Platform | Description
 -- | --
@@ -29,8 +29,6 @@ Platform | Description
 6. Restart Home Assistant
 7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Traeger"
 
-## Platform Details
-Some of the platforms are fairly self explanatory, others could use a little more explaining. Below are more details on some of those platforms.
 ### Grill State Sensor
 This sensor aligns with the status values in the Traeger app.
 State | Description
