@@ -1,2 +1,2 @@
-# hacs Traeger WiFire
+# HACS Traeger WiFire
 Home Assistant Traeger WiFire Integration 
