@@ -6,10 +6,11 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from homeassistant.const import UnitOfTemperature
 import homeassistant.helpers.device_registry as dr
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.const import UnitOfTemperature
+
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)

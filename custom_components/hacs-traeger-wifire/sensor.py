@@ -1,31 +1,30 @@
-from __future__ import annotations
 """Sensor platform for Traeger."""
+from __future__ import annotations
 
 import logging
 from typing import Any
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.const import SIGNAL_STRENGTH_DECIBELS, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
-from homeassistant.const import UnitOfTemperature, SIGNAL_STRENGTH_DECIBELS, UnitOfTime
-from homeassistant.util import slugify
 from homeassistant.helpers.entity import EntityCategory
+from homeassistant.util import slugify
 
 from .const import (
     DOMAIN,
-    GRILL_MODE_OFFLINE,
-    GRILL_MODE_SHUTDOWN,
     GRILL_MODE_COOL_DOWN,
     GRILL_MODE_CUSTOM_COOK,
-    GRILL_MODE_MANUAL_COOK,
-    GRILL_MODE_PREHEATING,
-    GRILL_MODE_IGNITING,
     GRILL_MODE_IDLE,
+    GRILL_MODE_IGNITING,
+    GRILL_MODE_MANUAL_COOK,
+    GRILL_MODE_OFFLINE,
+    GRILL_MODE_PREHEATING,
+    GRILL_MODE_SHUTDOWN,
     GRILL_MODE_SLEEPING,
 )
+from .coordinator import TraegerCoordinator
 from .entity import TraegerBaseEntity
 from .monitor import TraegerGrillMonitor
-from .coordinator import TraegerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -632,9 +631,7 @@ class TraegerProbeStatusSensor(TraegerBaseEntity, SensorEntity):
             self.probe_alarm = True
         else:
             target_changed = target_temp != self.previous_target_temp
-            if target_changed and target_temp != 0:
-                self.probe_alarm = False
-            elif grill_mode not in active_modes:
+            if (target_changed and target_temp != 0) or grill_mode not in active_modes:
                 self.probe_alarm = False
 
         # Fell-out threshold
@@ -669,7 +666,7 @@ class TraegerProbeStatusSensor(TraegerBaseEntity, SensorEntity):
         }
 
 
-def seconds_to_compact(seconds: int | float | None) -> str | None:
+def seconds_to_compact(seconds: float | None) -> str | None:
     """Return 'H:MM:SS' or 'M:SS' (e.g., 310 -> '5:10', 3750 -> '1:02:30')."""
     if seconds is None:
         return None

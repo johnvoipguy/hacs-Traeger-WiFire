@@ -1,6 +1,4 @@
-"""
-Constants for traeger.
-"""
+"""Constants for traeger. """
 
 from homeassistant.const import UnitOfTemperature
 

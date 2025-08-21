@@ -1,19 +1,19 @@
 """Traeger API client for Home Assistant."""
 
 import asyncio
+from collections.abc import Callable
 import datetime
+from datetime import timedelta
 import json
 import logging
 import ssl
 import time
+from typing import Any
 import urllib.parse
-from datetime import timedelta
-from typing import Any, Optional
-from collections.abc import Callable
 
-import async_timeout
 import aiohttp
 from aiomqtt import Client as MQTTClient, MqttError
+import async_timeout
 
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
@@ -48,7 +48,7 @@ class traeger:
         self.task = None
         self.message_task = None
         self.coordinator = None  # type: Optional[object]
-        self._coordinator: Optional[Any] = None
+        self._coordinator: Any | None = None
         self._poke_last: dict[str, float] = {}
         self._poke_backoff: dict[str, float] = {}
         self._last_mqtt_rx: dict[str, float] = {}
@@ -80,7 +80,7 @@ class traeger:
                 if "application/x-amz-json-1.1" in content_type:
                     return json.loads(await response.text())
                 return await response.json()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             _LOGGER.error(f"Timeout error fetching data from {url}")
             raise
         except aiohttp.ClientResponseError as e:
@@ -179,7 +179,7 @@ class traeger:
                 f"Skipping MQTT poke for {grill_id} (window {window:.1f}s, last {now - last:.1f}s ago)"
             )
             return
-        _LOGGER.debug(f"Poking MQTT for grill with command 90 (grill_id={grill_id})")
+        _LOGGER.debug("Poking MQTT for grill with command 90")
         try:
             await self.send_command(grill_id, "90")
             self._poke_last[grill_id] = now
@@ -336,7 +336,7 @@ class traeger:
                     )
                     await self.update_state(grill_id)
                 self.message_task = self.hass.async_create_task(self.process_messages())
-        except (asyncio.TimeoutError, aiohttp.ClientError, MqttError) as e:
+        except (TimeoutError, aiohttp.ClientError, MqttError) as e:
             _LOGGER.error(f"Failed to connect MQTT: {e}")
             self.mqtt_client = None
             self._mqtt_connected = False
@@ -394,7 +394,7 @@ class traeger:
     def syncmain(self):
         current_time = time.time()
         if current_time - self._last_syncmain_time < 30:
-            _LOGGER.debug(f"Skipping syncmain, too soon since last call")
+            _LOGGER.debug("Skipping syncmain, too soon since last call")
             return
         self._last_syncmain_time = current_time
         _LOGGER.debug("Call_Later SyncMain CreatingTask for async Main.")
@@ -402,8 +402,10 @@ class traeger:
 
     async def main(self):
         _LOGGER.debug(f"Current Main Loop Time: {time.time()}")
-        _LOGGER.debug(
-            f"MQTT Logger Token Time Remaining: {self.token_remaining()} MQTT Time Remaining: {self.mqtt_url_remaining()}"
+        _LOGGER.info(
+            "Token time remaining: %s MQTT time remaining: %s",
+            self.token_remaining(),
+            self.mqtt_url_remaining(),
         )
         if self.mqtt_url_remaining() < 60 or not self._mqtt_connected:
             if self.message_task is not None:
@@ -469,7 +471,7 @@ class traeger:
                 grill_id = grill["thingName"]
                 await self.update_state(grill_id)
             await self.connect_mqtt()
-        except (asyncio.TimeoutError, aiohttp.ClientError, MqttError) as e:
+        except (TimeoutError, aiohttp.ClientError, MqttError) as e:
             _LOGGER.error(f"Failed to start Traeger: {e}")
             raise
         _LOGGER.debug("Traeger setup completed")
@@ -498,10 +500,10 @@ class traeger:
                 for callback in self.grill_callbacks[grill_id]:
                     if callback is not None and callable(callback):
                         _LOGGER.debug(
-                            f"Executing callback on kill for grill {grill_id}: {callback.__qualname__} from {getattr(callback, '__self__', 'Unknown')}"
+                            "Executing callback on kill for grill {grill_id}: {callback.__qualname__} from {getattr(callback, '__self__', 'Unknown')}"
                         )
                         self.hass.async_create_task(callback())
                     else:
                         _LOGGER.error(
-                            f"Skipping invalid callback on kill for grill {grill_id}: {callback}"
+                            "Skipping invalid callback on kill for grill {grill_id}: {callback}"
                         )

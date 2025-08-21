@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 import logging
-from typing import Any, Callable, Iterable, Type
+from typing import Any
+
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
@@ -15,7 +17,7 @@ class TraegerGrillMonitor:
         client: Any,
         grill_id: str,
         async_add_entities: Callable[[list[Entity]], None],
-        entity_class: Type[Entity],
+        entity_class: type[Entity],
         *,
         coordinator: Any | None = None,
         include_types: tuple[str, ...] = ("probe",),
@@ -56,7 +58,7 @@ class TraegerGrillMonitor:
             channel = acc.get("uuid") or acc.get("channel")
             if not channel or not isinstance(channel, str):
                 _LOGGER.debug(
-                    f"Skipping accessory with missing/invalid channel on grill {self.grill_id}: {acc}"
+                    "Skipping accessory with missing/invalid channel on grill {self.grill_id}: {acc}"
                 )
                 continue
             if channel in self._seen_channels:
@@ -80,14 +82,14 @@ class TraegerGrillMonitor:
         for channel in self._iter_new_channels(state):
             entity = self._make_entity(channel)
             _LOGGER.debug(
-                f"Discovered {self.entity_class.__name__} on grill {self.grill_id}: channel={channel}"
+                "Discovered {self.entity_class.__name__} on grill {self.grill_id}: channel={channel}"
             )
             new_entities.append(entity)
             self._seen_channels.add(channel)
 
         if new_entities:
             _LOGGER.debug(
-                f"Monitor for grill {self.grill_id} adding {len(new_entities)} entity(ies)"
+                "Monitor for grill {self.grill_id} adding {len(new_entities)} entity(ies)"
             )
             self.async_add_entities(new_entities)
 
@@ -100,15 +102,15 @@ class TraegerGrillMonitor:
             added = self._add_new_from_state(state)
             if added:
                 _LOGGER.debug(
-                    f"Monitor for grill {self.grill_id} added {added} new entity(ies) from coordinator update"
+                    "Monitor for grill {self.grill_id} added {added} new entity(ies) from coordinator update"
                 )
         except Exception:  # Best-effort; never raise from callbacks
-            _LOGGER.exception(f"Monitor update failed for grill {self.grill_id}")
+            _LOGGER.exception("Monitor update failed for grill {self.grill_id}")
 
     async def async_setup(self) -> None:
         """Discover accessories and add entities. Subscribe for future updates."""
         _LOGGER.debug(
-            f"Setting up probe monitor for grill {self.grill_id} using {self.entity_class.__name__}"
+            "Setting up probe monitor for grill {self.grill_id} using {self.entity_class.__name__}"
         )
 
         # Initial discovery from latest available state
@@ -121,7 +123,7 @@ class TraegerGrillMonitor:
                 self._on_coordinator_update
             )
             _LOGGER.debug(
-                f"Probe monitor subscribed to coordinator updates for grill {self.grill_id}"
+                "Probe monitor subscribed to coordinator updates for grill {self.grill_id}"
             )
 
     def shutdown(self) -> None:

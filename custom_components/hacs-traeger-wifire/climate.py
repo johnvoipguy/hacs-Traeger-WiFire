@@ -3,34 +3,34 @@
 from __future__ import annotations
 
 import logging
+
 from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
     HVACMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.const import UnitOfTemperature
-from homeassistant.util import slugify
+from homeassistant.core import HomeAssistant
 
 from .const import (
     DOMAIN,
-    GRILL_MODE_OFFLINE,
-#   GRILL_MODE_COOL_DOWN,
-    GRILL_MODE_CUSTOM_COOK,
-    GRILL_MODE_MANUAL_COOK,
-    GRILL_MODE_PREHEATING,
-    GRILL_MODE_IGNITING,
-#    GRILL_MODE_IDLE,
-#    GRILL_MODE_SLEEPING,
-#    GRILL_MODE_SHUTDOWN,
+    #    GRILL_MODE_IDLE,
+    #    GRILL_MODE_SLEEPING,
+    #    GRILL_MODE_SHUTDOWN,
     GRILL_MIN_TEMP_C,
     GRILL_MIN_TEMP_F,
+    #   GRILL_MODE_COOL_DOWN,
+    GRILL_MODE_CUSTOM_COOK,
+    GRILL_MODE_IGNITING,
+    GRILL_MODE_MANUAL_COOK,
+    GRILL_MODE_OFFLINE,
+    GRILL_MODE_PREHEATING,
     PROBE_PRESET_MODES,
 )
+from .coordinator import TraegerCoordinator
 from .entity import TraegerBaseEntity
 from .monitor import TraegerGrillMonitor
-from .coordinator import TraegerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -91,15 +91,14 @@ async def async_setup_entry(
 
 class TraegerGrill(ClimateEntity, TraegerBaseEntity):
     """Main grill climate entity."""
-
     def __init__(self, client, grill_id: str, *, coordinator=None) -> None:
         super().__init__(
             client, grill_id, name="Grill Climate", coordinator=coordinator
         )
-        self._attr_unique_id = f"{grill_id}_climate"
-        self.entity_id = f"climate.{slugify(grill_id)}_climate"
+        self._attr_unique_id = "{grill_id}_climate"
+        self.entity_id = "climate.{slugify(grill_id)}_climate"
         self._attr_entity_registry_visible_default = True
-        _LOGGER.debug(f"Initialized climate {self.entity_id} for grill {grill_id}")
+        _LOGGER.debug("Initialized climate {self.entity_id} for grill {grill_id}")
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
@@ -205,7 +204,7 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
             await self.client.shutdown_grill(self.grill_id)
         if hasattr(self.client, "trigger_mqtt_refresh"):
             _LOGGER.debug(
-                f"Requesting MQTT poke after hvac_mode change for {self.entity_id}"
+                "Requesting MQTT poke after hvac_mode change for {self.entity_id}"
             )
             await self.client.trigger_mqtt_refresh(self.grill_id)
         self.async_schedule_update_ha_state()
@@ -216,7 +215,7 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
             await self.client.set_temperature(self.grill_id, int(temperature))
             if hasattr(self.client, "trigger_mqtt_refresh"):
                 _LOGGER.debug(
-                    f"Requesting MQTT poke after target temp change for {self.entity_id}"
+                    "Requesting MQTT poke after target temp change for {self.entity_id}"
                 )
                 await self.client.trigger_mqtt_refresh(self.grill_id)
             self.async_schedule_update_ha_state()
@@ -233,14 +232,14 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
         self, client, grill_id: str, channel: str, *, coordinator=None
     ) -> None:
         super().__init__(
-            client, grill_id, name=f"Probe {channel}", coordinator=coordinator
+            client, grill_id, name="Probe {channel}", coordinator=coordinator
         )
         self._channel = channel
         self.accessory_id = channel
-        self._attr_unique_id = f"{grill_id}_probe_{channel}"
-        self.entity_id = f"climate.{slugify(grill_id)}_probe_{slugify(channel)}"
+        self._attr_unique_id = "{grill_id}_probe_{channel}"
+        self.entity_id = "climate.{slugify(grill_id)}_probe_{slugify(channel)}"
         self._attr_entity_registry_visible_default = True
-        _LOGGER.debug(f"Initialized probe {self.entity_id} for grill {grill_id}")
+        _LOGGER.debug("Initialized probe {self.entity_id} for grill {grill_id}")
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
