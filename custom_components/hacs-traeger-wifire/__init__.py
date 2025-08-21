@@ -1,11 +1,8 @@
-# Version: 1.0.17-grok-is-a-fuckup
-# Revision: 2025-08-19 02:30:00
 """
 Custom integration to integrate Traeger with Home Assistant.
 """
 
 from __future__ import annotations
-
 import asyncio
 import logging
 from typing import Final
@@ -13,7 +10,6 @@ from typing import Final
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN
@@ -23,11 +19,11 @@ from .traeger import traeger as TraegerClient
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: Final[list[Platform]] = [
-    Platform.SENSOR,
     Platform.CLIMATE,
-    Platform.SWITCH,
     Platform.NUMBER,
     Platform.SELECT,
+    Platform.SENSOR,
+    Platform.SWITCH,
 ]
 
 

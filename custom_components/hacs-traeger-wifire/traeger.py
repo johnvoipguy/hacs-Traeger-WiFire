@@ -11,13 +11,14 @@ import logging
 import ssl
 import time
 import urllib.parse
-import async_timeout
-
 from datetime import timedelta
 from typing import Any, Optional
 from collections.abc import Callable
+
+import async_timeout
 import aiohttp
 from aiomqtt import Client as MQTTClient, MqttError
+
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
@@ -361,74 +362,36 @@ class traeger:
         self._coordinator = coordinator
         self.coordinator = coordinator  # keep legacy attribute in sync
 
-    async def _handle_mqtt_update(self, topic: str, payload: bytes) -> None:
+    async def _handle_mqtt_update(self, topic: str, payload: bytes | str) -> None:
         """Process an MQTT update and push to coordinator."""
+        payload_str = payload.decode("utf-8") if isinstance(payload, bytes) else payload
         try:
             if topic.startswith("prod/thing/update/"):
                 grill_id = topic.split("/")[-1]
-                state = json.loads(payload.decode("utf-8"))
+                state = json.loads(payload_str)
                 self.grill_status[grill_id] = state
-                # Push snapshot so coordinator consumers refresh
+                # Mark last MQTT RX for auto-poke logic
+                self._last_mqtt_rx[grill_id] = time.monotonic()
+                # Push snapshot to coordinator
                 if self._coordinator is not None:
-                    # Update your existing client cache
                     self._coordinator.async_set_updated_data(dict(self.grill_status))
         except Exception:
-            _LOGGER.exception("Failed to process MQTT update")
+            _LOGGER.exception("Failed to process MQTT update for %s", topic)
 
     async def process_messages(self):
         """Your existing MQTT loop; call _handle_mqtt_update per message."""
         try:
             async for message in self.mqtt_client.messages:
                 topic = str(message.topic)
-                if isinstance(message.payload, bytes):
-                    payload = message.payload.decode("utf-8")
-                else:
-                    payload = message.payload
-                _LOGGER.debug(f"grill_message: topic={topic}, payload={payload}")
-                _LOGGER.info(
-                    f"Token Time Remaining: {self.token_remaining()} MQTT Time Remaining: {self.mqtt_url_remaining()}"
+                payload = message.payload
+                _LOGGER.debug(
+                    "grill_message: topic=%s, payload=%s",
+                    topic,
+                    payload if not isinstance(payload, bytes) else payload.decode("utf-8"),
                 )
-
-                if topic.startswith("prod/thing/update/"):
-                    grill_id = topic[len("prod/thing/update/") :]
-                    self.grill_status[grill_id] = json.loads(payload)
-
-                    # Update idle tracker so schedule_auto_poke knows MQTT is flowing
-                    self._last_mqtt_rx[grill_id] = time.monotonic()
-                    _LOGGER.debug(
-                        f"Updated grill_status for {grill_id}: keys={list(self.grill_status[grill_id].keys())}"
-                    )
-                    _LOGGER.debug(
-                        f"MQTT RX timestamp updated for {grill_id}: {self._last_mqtt_rx[grill_id]:.3f}"
-                    )
-
-                    # Always push latest snapshot to coordinator
-                    if self._coordinator is not None:
-                        self._coordinator.async_set_updated_data(
-                            dict(self.grill_status)
-                        )
-
-                    # Keep old behavior: skip entity callbacks only on very first packet
-                    if self._initial_setup:
-                        self._initial_setup = False
-                        continue
-                    if grill_id in self.grill_callbacks:
-                        current_time = time.time()
-                        last_time = self._last_callback_time.get(grill_id, 0)
-                        if current_time - last_time >= 15:
-                            for callback in self.grill_callbacks[grill_id]:
-                                if callback is not None and callable(callback):
-                                    _LOGGER.debug(
-                                        f"Executing callback for grill {grill_id}: {callback.__qualname__} from {getattr(callback, '__self__', 'Unknown')}"
-                                    )
-                                    self.hass.async_create_task(callback())
-                                else:
-                                    _LOGGER.error(
-                                        f"Skipping invalid callback for grill {grill_id}: {callback}"
-                                    )
-                            self._last_callback_time[grill_id] = current_time
+                await self._handle_mqtt_update(topic, payload)
         except MqttError as err:
-            _LOGGER.error(f"MQTT Error: {err}")
+            _LOGGER.error("MQTT error: %s", err)
             self._mqtt_connected = False
             self.hass.loop.call_later(30, self.syncmain)
         except asyncio.CancelledError:

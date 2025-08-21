@@ -4,14 +4,11 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Callable, Iterable, Type
-
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class TraegerGrillMonitor:
-    """Create and maintain entities for grill accessories."""
 
     def __init__(
         self,

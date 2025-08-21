@@ -6,10 +6,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from homeassistant.helpers.device_registry import async_get as dr_async_get
+import homeassistant.helpers.device_registry as dr
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
+from homeassistant.const import UnitOfTemperature
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ class TraegerBaseEntity(CoordinatorEntity, RestoreEntity):
 
         async def _update_device_registry() -> None:
             dev_info = self._compose_device_info()
-            dev_reg = dr_async_get(self.hass)
+            dev_reg = dr.async_get(self.hass)
             device = dev_reg.async_get_device(identifiers={(DOMAIN, self.grill_id)})
             if device is None:
                 return

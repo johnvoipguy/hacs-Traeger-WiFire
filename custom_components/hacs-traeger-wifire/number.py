@@ -1,14 +1,14 @@
-# Revision: 2025-08-18 16:40:00
 """
 Number platform for Traeger.
 """
 
 import logging
+
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import EntityCategory
-from homeassistant.util import slugify  # FIX: import slugify
+from homeassistant.util import slugify
+
 from .const import DOMAIN
 from .entity import TraegerBaseEntity
 from .coordinator import TraegerCoordinator

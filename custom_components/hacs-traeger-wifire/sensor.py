@@ -1,8 +1,6 @@
-# Version: 1.1.1
+from __future__ import annotations
 """Sensor platform for Traeger."""
 
-from __future__ import annotations
-from datetime import timedelta
 import logging
 from typing import Any
 
@@ -12,7 +10,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import UnitOfTemperature, SIGNAL_STRENGTH_DECIBELS, UnitOfTime
 from homeassistant.util import slugify
 from homeassistant.helpers.entity import EntityCategory
-from homeassistant.components.time import TimeEntity
 
 from .const import (
     DOMAIN,
