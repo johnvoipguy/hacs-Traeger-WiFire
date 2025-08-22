@@ -1,5 +1,4 @@
 """Custom integration to integrate Traeger with Home Assistant."""
-
 from __future__ import annotations
 
 import asyncio
