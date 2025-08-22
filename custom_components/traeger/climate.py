@@ -1,5 +1,4 @@
 """Climate platform for Traeger."""
-
 from __future__ import annotations
 
 import logging
