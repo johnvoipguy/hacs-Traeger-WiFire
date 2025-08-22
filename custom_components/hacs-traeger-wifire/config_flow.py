@@ -1,16 +1,19 @@
-"""Adds config flow for Blueprint."""
-import logging
+"""Config flow for Traeger WiFIRE."""
 
-import voluptuous as vol
+from __future__ import annotations
+
+import logging
 
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
+import voluptuous as vol
 
 from .const import CONF_PASSWORD, CONF_USERNAME, DOMAIN, PLATFORMS
 from .traeger import traeger
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
+
 
 class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Blueprint."""
@@ -35,9 +38,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
             )
             if valid:
-                return self.async_create_entry(
-                    title=user_input[CONF_USERNAME], data=user_input
-                )
+                return self.async_create_entry(title=user_input[CONF_USERNAME], data=user_input)
             self._errors["base"] = "auth"
 
             return await self._show_config_form(user_input)
@@ -76,8 +77,8 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return True
         except Exception as exception:  # pylint: disable=broad-except
             _LOGGER.error(
-                 "Failed to login %s",
-                 exception,
+                "Failed to login %s",
+                exception,
             )
         return False
 

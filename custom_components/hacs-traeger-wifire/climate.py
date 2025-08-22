@@ -49,9 +49,7 @@ def _dedupe_entities(entities: list) -> list:
     return out
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up Traeger climate entities from a config entry."""
     data = hass.data[DOMAIN][entry.entry_id]
     client = data["client"]
@@ -61,9 +59,7 @@ async def async_setup_entry(
     entities: list[ClimateEntity] = []
 
     added_grills: set[str] = data.setdefault("climate_added_grills", set())
-    added_probe_monitors: set[str] = data.setdefault(
-        "climate_added_probe_monitors", set()
-    )
+    added_probe_monitors: set[str] = data.setdefault("climate_added_probe_monitors", set())
 
     for grill in grills:
         grill_id = grill["thingName"]
@@ -91,10 +87,9 @@ async def async_setup_entry(
 
 class TraegerGrill(ClimateEntity, TraegerBaseEntity):
     """Main grill climate entity."""
+
     def __init__(self, client, grill_id: str, *, coordinator=None) -> None:
-        super().__init__(
-            client, grill_id, name="Grill Climate", coordinator=coordinator
-        )
+        super().__init__(client, grill_id, name="Grill Climate", coordinator=coordinator)
         self._attr_unique_id = "{grill_id}_climate"
         self.entity_id = "climate.{slugify(grill_id)}_climate"
         self._attr_entity_registry_visible_default = True
@@ -103,9 +98,7 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def name(self):
@@ -163,16 +156,10 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
         units = self.temperature_unit
         limits = self.grill_limits or {}
         if not limits:
-            return (
-                GRILL_MIN_TEMP_C
-                if units == UnitOfTemperature.CELSIUS
-                else GRILL_MIN_TEMP_F
-            )
+            return GRILL_MIN_TEMP_C if units == UnitOfTemperature.CELSIUS else GRILL_MIN_TEMP_F
         return limits.get(
             "min_grill_temp",
-            GRILL_MIN_TEMP_C
-            if units == UnitOfTemperature.CELSIUS
-            else GRILL_MIN_TEMP_F,
+            GRILL_MIN_TEMP_C if units == UnitOfTemperature.CELSIUS else GRILL_MIN_TEMP_F,
         )
 
     @property
@@ -180,16 +167,10 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
         units = self.temperature_unit
         limits = self.grill_limits or {}
         if not limits:
-            return (
-                GRILL_MIN_TEMP_C
-                if units == UnitOfTemperature.CELSIUS
-                else GRILL_MIN_TEMP_F
-            )
+            return GRILL_MIN_TEMP_C if units == UnitOfTemperature.CELSIUS else GRILL_MIN_TEMP_F
         return limits.get(
             "max_grill_temp",
-            GRILL_MIN_TEMP_C
-            if units == UnitOfTemperature.CELSIUS
-            else GRILL_MIN_TEMP_F,
+            GRILL_MIN_TEMP_C if units == UnitOfTemperature.CELSIUS else GRILL_MIN_TEMP_F,
         )
 
     @property
@@ -203,9 +184,7 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
         else:
             await self.client.shutdown_grill(self.grill_id)
         if hasattr(self.client, "trigger_mqtt_refresh"):
-            _LOGGER.debug(
-                "Requesting MQTT poke after hvac_mode change for {self.entity_id}"
-            )
+            _LOGGER.debug("Requesting MQTT poke after hvac_mode change for {self.entity_id}")
             await self.client.trigger_mqtt_refresh(self.grill_id)
         self.async_schedule_update_ha_state()
 
@@ -214,9 +193,7 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
         if temperature is not None:
             await self.client.set_temperature(self.grill_id, int(temperature))
             if hasattr(self.client, "trigger_mqtt_refresh"):
-                _LOGGER.debug(
-                    "Requesting MQTT poke after target temp change for {self.entity_id}"
-                )
+                _LOGGER.debug("Requesting MQTT poke after target temp change for {self.entity_id}")
                 await self.client.trigger_mqtt_refresh(self.grill_id)
             self.async_schedule_update_ha_state()
 
@@ -228,12 +205,8 @@ class TraegerGrill(ClimateEntity, TraegerBaseEntity):
 class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
     """Climate entity for a grill probe."""
 
-    def __init__(
-        self, client, grill_id: str, channel: str, *, coordinator=None
-    ) -> None:
-        super().__init__(
-            client, grill_id, name="Probe {channel}", coordinator=coordinator
-        )
+    def __init__(self, client, grill_id: str, channel: str, *, coordinator=None) -> None:
+        super().__init__(client, grill_id, name="Probe {channel}", coordinator=coordinator)
         self._channel = channel
         self.accessory_id = channel
         self._attr_unique_id = "{grill_id}_probe_{channel}"
@@ -244,9 +217,7 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def name(self):
@@ -261,9 +232,7 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
         state = self.grill_state or {}
         status = state.get("status") or {}
         for acc in status.get("acc", []):
-            if (acc.get("uuid") == self._channel) or (
-                acc.get("channel") == self._channel
-            ):
+            if (acc.get("uuid") == self._channel) or (acc.get("channel") == self._channel):
                 return acc.get("con", 0) == 1
         return False
 
@@ -304,9 +273,7 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
         state = self.grill_state or {}
         status = state.get("status") or {}
         for acc in status.get("acc", []):
-            if (acc.get("uuid") == self._channel) or (
-                acc.get("channel") == self._channel
-            ):
+            if (acc.get("uuid") == self._channel) or (acc.get("channel") == self._channel):
                 return (acc.get("probe") or {}).get("get_temp")
         return None
 
@@ -315,9 +282,7 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
         state = self.grill_state or {}
         status = state.get("status") or {}
         for acc in status.get("acc", []):
-            if (acc.get("uuid") == self._channel) or (
-                acc.get("channel") == self._channel
-            ):
+            if (acc.get("uuid") == self._channel) or (acc.get("channel") == self._channel):
                 return (acc.get("probe") or {}).get("set_temp")
         return None
 
@@ -344,6 +309,4 @@ class TraegerGrillProbe(ClimateEntity, TraegerBaseEntity):
 
     @property
     def supported_features(self):
-        return (
-            ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
-        )
+        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE

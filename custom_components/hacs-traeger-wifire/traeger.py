@@ -1,5 +1,7 @@
 """Traeger API client for Home Assistant."""
 
+from __future__ import annotations
+
 import asyncio
 from collections.abc import Callable
 import datetime
@@ -14,7 +16,6 @@ import urllib.parse
 import aiohttp
 from aiomqtt import Client as MQTTClient, MqttError
 import async_timeout
-
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
@@ -57,12 +58,8 @@ class traeger:
     def token_remaining(self):
         return self.token_expires - time.time()
 
-    async def api_wrapper(
-        self, method: str, url: str, data: dict = {}, headers: dict = {}
-    ):
-        _LOGGER.debug(
-            f"API call: method={method}, url={url}, data={data}, headers={headers}"
-        )
+    async def api_wrapper(self, method: str, url: str, data: dict = {}, headers: dict = {}):
+        _LOGGER.debug(f"API call: method={method}, url={url}, data={data}, headers={headers}")
         try:
             async with async_timeout.timeout(TIMEOUT):
                 if method == "get":
@@ -70,9 +67,7 @@ class traeger:
                 elif method == "post":
                     response = await self.session.post(url, json=data, headers=headers)
                 elif method == "post_raw":
-                    response = await self.session.post(
-                        url, data=json.dumps(data), headers=headers
-                    )
+                    response = await self.session.post(url, data=json.dumps(data), headers=headers)
                 else:
                     raise ValueError(f"Unsupported method: {method}")
                 response.raise_for_status()
@@ -128,9 +123,7 @@ class traeger:
         if self.token_remaining() < 60:
             request_time = time.time()
             response = await self.do_cognito()
-            self.token_expires = (
-                response["AuthenticationResult"]["ExpiresIn"] + request_time
-            )
+            self.token_expires = response["AuthenticationResult"]["ExpiresIn"] + request_time
             self.token = response["AuthenticationResult"]["IdToken"]
             _LOGGER.debug(
                 f"Refreshed token: token={self.token[:10]}..., expires={self.token_expires}"
@@ -153,9 +146,7 @@ class traeger:
             "Content-Type": "application/json",
         }
         _LOGGER.debug(f"Send Command Topic: {grill_id}, Send Command: {command}")
-        await self.api_wrapper(
-            "post_raw", url, data={"command": command}, headers=headers
-        )
+        await self.api_wrapper("post_raw", url, data={"command": command}, headers=headers)
 
     async def _on_mqtt_message(self, grill_id: str, payload: dict) -> None:
         """Deprecated; use _handle_mqtt_update instead."""
@@ -185,9 +176,7 @@ class traeger:
             self._poke_last[grill_id] = now
             self._poke_backoff[grill_id] = 0.0
         except Exception as err:
-            next_backoff = min(
-                max(start_backoff, backoff * 2 or start_backoff), max_backoff
-            )
+            next_backoff = min(max(start_backoff, backoff * 2 or start_backoff), max_backoff)
             self._poke_backoff[grill_id] = next_backoff
             self._poke_last[grill_id] = now
             _LOGGER.debug(
@@ -217,14 +206,10 @@ class traeger:
                 return
             idle = time.monotonic() - last_rx
             if idle >= idle_threshold_seconds:
-                _LOGGER.debug(
-                    f"Auto-poke: MQTT idle {idle:.1f}s for {grill_id}, sending 90"
-                )
+                _LOGGER.debug(f"Auto-poke: MQTT idle {idle:.1f}s for {grill_id}, sending 90")
                 await self.trigger_mqtt_refresh(grill_id)
 
-        unsub = async_track_time_interval(
-            hass, _tick, timedelta(seconds=interval_seconds)
-        )
+        unsub = async_track_time_interval(hass, _tick, timedelta(seconds=interval_seconds))
         self._auto_poke_unsub[grill_id] = unsub
 
     def cancel_auto_poke(self, grill_id: str) -> None:
@@ -293,9 +278,7 @@ class traeger:
                     "https://1ywgyc65d1.execute-api.us-west-2.amazonaws.com/prod/mqtt-connections",
                     headers={"Authorization": f"Bearer {self.token}"},
                 )
-                self.mqtt_url_expires = (
-                    json_data["expirationSeconds"] + mqtt_request_time
-                )
+                self.mqtt_url_expires = json_data["expirationSeconds"] + mqtt_request_time
                 self.mqtt_url = json_data["signedUrl"]
                 _LOGGER.debug(
                     f"MQTT URL refreshed: {self.mqtt_url}, expires={self.mqtt_url_expires}"
@@ -331,9 +314,7 @@ class traeger:
                 _LOGGER.info("Grill Connected")
                 for grill in self.grills:
                     grill_id = grill["thingName"]
-                    await self.mqtt_client.subscribe(
-                        f"prod/thing/update/{grill_id}", qos=1
-                    )
+                    await self.mqtt_client.subscribe(f"prod/thing/update/{grill_id}", qos=1)
                     await self.update_state(grill_id)
                 self.message_task = self.hass.async_create_task(self.process_messages())
         except (TimeoutError, aiohttp.ClientError, MqttError) as e:

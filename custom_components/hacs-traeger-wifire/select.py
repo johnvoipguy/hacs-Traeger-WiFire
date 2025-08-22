@@ -18,9 +18,7 @@ from .entity import TraegerBaseEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up select platform for Traeger."""
     _LOGGER.debug("Setting up Select entities")
     data = hass.data[DOMAIN][entry.entry_id]
@@ -32,9 +30,7 @@ async def async_setup_entry(
         grill_id = grill["thingName"]
         _LOGGER.debug("Setting up Select entity for grill %s", grill_id)
         # Always add the select entity, even if state is missing
-        entities.append(
-            TraegerCustomCookSelect(client, grill_id, coordinator=coordinator)
-        )
+        entities.append(TraegerCustomCookSelect(client, grill_id, coordinator=coordinator))
     if entities:
         async_add_entities(entities)
 
@@ -51,29 +47,25 @@ class TraegerCustomCookSelect(TraegerBaseEntity, SelectEntity):
         grill_id: str,
         coordinator: TraegerCoordinator | None = None,
     ) -> None:
-        super().__init__(
-            client, grill_id, name="Custom Cook cycle", coordinator=coordinator
-        )
+        super().__init__(client, grill_id, name="Custom Cook cycle", coordinator=coordinator)
         self._attr_unique_id = f"{grill_id}_custom_cook_cycle"
         self.entity_id = f"select.{slugify(grill_id)}_custom_cook_cycle"
-        _LOGGER.debug(
-            "Initialized select %s with name %s", self.entity_id, self._attr_name
-        )
+        _LOGGER.debug("Initialized select %s with name %s", self.entity_id, self._attr_name)
 
     async def async_added_to_hass(self) -> None:
         """Subscribe to coordinator updates."""
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def name(self) -> str | None:
+        """Return the entity name."""
         return self._attr_name
 
     @property
     def unique_id(self) -> str | None:
+        """Return the unique ID."""
         return self._attr_unique_id
 
     @property
@@ -110,10 +102,7 @@ class TraegerCustomCookSelect(TraegerBaseEntity, SelectEntity):
             return "None"
         cycles = state["custom_cook"].get("cook_cycles", [])
         for cycle in cycles:
-            if (
-                cycle.get("slot_num") == current_cycle
-                and cycle.get("populated", 0) == 1
-            ):
+            if cycle.get("slot_num") == current_cycle and cycle.get("populated", 0) == 1:
                 return cycle["cycle_name"]
         return "None"
 
@@ -123,9 +112,7 @@ class TraegerCustomCookSelect(TraegerBaseEntity, SelectEntity):
             _LOGGER.debug("Setting %s to no cycle", self.entity_id)
             await self.client.set_custom_cook(self.grill_id, 0)
         else:
-            cycles = (
-                (self.grill_state or {}).get("custom_cook", {}).get("cook_cycles", [])
-            )
+            cycles = (self.grill_state or {}).get("custom_cook", {}).get("cook_cycles", [])
             for cycle in cycles:
                 if cycle.get("cycle_name") == option and cycle.get("populated", 0) == 1:
                     _LOGGER.debug(

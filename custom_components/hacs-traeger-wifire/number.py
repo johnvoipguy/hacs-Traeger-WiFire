@@ -14,9 +14,7 @@ from .entity import TraegerBaseEntity
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Setup number platform."""
     _LOGGER.debug("Setting up number entities")
     data = hass.data[DOMAIN][entry.entry_id]
@@ -77,13 +75,9 @@ class TraegerNumber(TraegerBaseEntity, NumberEntity):
         start = state.get("status", {}).get("cook_timer_start", 0)
         end = state.get("status", {}).get("cook_timer_end", 0)
         seconds = max(0, end - start) if end > 0 else None
-        return (
-            seconds / 60 if seconds is not None else None
-        )  # Convert seconds to minutes
+        return seconds / 60 if seconds is not None else None  # Convert seconds to minutes
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))

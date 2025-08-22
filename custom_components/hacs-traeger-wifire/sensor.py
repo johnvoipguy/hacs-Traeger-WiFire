@@ -1,10 +1,12 @@
 """Sensor platform for Traeger."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import SIGNAL_STRENGTH_DECIBELS, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
@@ -42,9 +44,7 @@ MODE_LABELS: dict[int, str] = {
 GRILL_STATE_MAPPING = MODE_LABELS.copy()
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities) -> None:
     """Set up sensor platform."""
     _LOGGER.debug("Setting up sensor monitor")
 
@@ -102,9 +102,7 @@ async def async_setup_entry(
         # Main sensors
         entities.extend(
             [
-                TraegerSensor(
-                    coordinator, client, grill_id, "Pellet Level", "pellet_level", "%"
-                ),
+                TraegerSensor(coordinator, client, grill_id, "Pellet Level", "pellet_level", "%"),
                 TraegerSensor(
                     coordinator,
                     client,
@@ -130,9 +128,7 @@ async def async_setup_entry(
                     "cook_timer_remaining_text",
                     None,  # string, no device_class
                 ),
-                TraegerSensor(
-                    coordinator, client, grill_id, "Grill State", "system_status", None
-                ),
+                TraegerSensor(coordinator, client, grill_id, "Grill State", "system_status", None),
                 TraegerSensor(
                     coordinator,
                     client,
@@ -141,9 +137,7 @@ async def async_setup_entry(
                     "heating_state",
                     None,
                 ),
-                TraegerSensor(
-                    coordinator, client, grill_id, "Cook Cycles", "cook_cycles", None
-                ),
+                TraegerSensor(coordinator, client, grill_id, "Cook Cycles", "cook_cycles", None),
                 TraegerSensor(
                     coordinator,
                     client,
@@ -341,9 +335,7 @@ class TraegerSensor(TraegerBaseEntity, SensorEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def grill_state(self) -> dict:
@@ -447,9 +439,7 @@ class MaintenanceAlert(TraegerBaseEntity, SensorEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def available(self) -> bool:
@@ -469,12 +459,8 @@ class MaintenanceAlert(TraegerBaseEntity, SensorEntity):
 class TraegerProbeSensor(TraegerBaseEntity, SensorEntity):
     """Sensor for probe channel."""
 
-    def __init__(
-        self, client: Any, grill_id: str, channel: str, *, coordinator=None
-    ) -> None:
-        super().__init__(
-            client, grill_id, name=f"Probe {channel}", coordinator=coordinator
-        )
+    def __init__(self, client: Any, grill_id: str, channel: str, *, coordinator=None) -> None:
+        super().__init__(client, grill_id, name=f"Probe {channel}", coordinator=coordinator)
         self._channel = channel
         self._attr_unique_id = f"{grill_id}_probe_sensor_{channel}"
         self.entity_id = f"sensor.{slugify(grill_id)}_probe_{slugify(channel)}"
@@ -485,18 +471,14 @@ class TraegerProbeSensor(TraegerBaseEntity, SensorEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def available(self) -> bool:
         state = self.grill_state or {}
         status = state.get("status") or {}
         for acc in status.get("acc", []):
-            if (acc.get("uuid") == self._channel) or (
-                acc.get("channel") == self._channel
-            ):
+            if (acc.get("uuid") == self._channel) or (acc.get("channel") == self._channel):
                 return acc.get("con", 0) == 1
         return False
 
@@ -505,9 +487,7 @@ class TraegerProbeSensor(TraegerBaseEntity, SensorEntity):
         state = self.grill_state or {}
         status = state.get("status") or {}
         for acc in status.get("acc", []):
-            if (acc.get("uuid") == self._channel) or (
-                acc.get("channel") == self._channel
-            ):
+            if (acc.get("uuid") == self._channel) or (acc.get("channel") == self._channel):
                 temp = (acc.get("probe") or {}).get("get_temp")
                 return float(temp) if temp is not None else None
         return None
@@ -525,18 +505,14 @@ class TraegerProbeTempSensor(TraegerBaseEntity, SensorEntity):
     _attr_translation_key = "probe_temperature"
 
     def __init__(self, client: Any, grill_id: str, channel: str, coordinator=None):
-        super().__init__(
-            client, grill_id, name=f"Probe {channel}", coordinator=coordinator
-        )
+        super().__init__(client, grill_id, name=f"Probe {channel}", coordinator=coordinator)
         self.channel = channel
         self._attr_unique_id = f"{grill_id}_probe_{channel}"
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     @property
     def native_value(self):
@@ -560,12 +536,8 @@ class TraegerProbeStatusSensor(TraegerBaseEntity, SensorEntity):
 
     _attr_icon = "mdi:thermometer"
 
-    def __init__(
-        self, client, grill_id: str, channel: str, *, coordinator=None
-    ) -> None:
-        super().__init__(
-            client, grill_id, name=f"Probe {channel} status", coordinator=coordinator
-        )
+    def __init__(self, client, grill_id: str, channel: str, *, coordinator=None) -> None:
+        super().__init__(client, grill_id, name=f"Probe {channel} status", coordinator=coordinator)
         self._channel = channel
         self._attr_unique_id = f"{grill_id}_probe_{channel}_status"
         self.entity_id = f"sensor.{slugify(grill_id)}_probe_{slugify(channel)}_status"
@@ -578,9 +550,7 @@ class TraegerProbeStatusSensor(TraegerBaseEntity, SensorEntity):
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if self.coordinator:
-            self.async_on_remove(
-                self.coordinator.async_add_listener(self.async_write_ha_state)
-            )
+            self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
 
     def _find_probe_accessory(self) -> dict | None:
         """Return the accessory dict for this probe channel using coordinator snapshot."""

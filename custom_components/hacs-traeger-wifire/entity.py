@@ -37,7 +37,9 @@ class TraegerBaseEntity(CoordinatorEntity, RestoreEntity):
 
     def _get_fw_version(self) -> str | None:
         """Return firmware version from latest snapshot."""
-        state: dict[str, Any] = self.grill_state or self.client.get_state_for_device(self.grill_id) or {}
+        state: dict[str, Any] = (
+            self.grill_state or self.client.get_state_for_device(self.grill_id) or {}
+        )
         settings = state.get("settings") or {}
         status = state.get("status") or {}
         fw = settings.get("fw_version") or state.get("fw_version") or status.get("fw_version")
@@ -130,11 +132,7 @@ class TraegerBaseEntity(CoordinatorEntity, RestoreEntity):
         return (
             str(details.get("deviceType"))
             if details.get("deviceType") is not None
-            else (
-                str(settings.get("device_type_id"))
-                if settings.get("device_type_id")
-                else None
-            )
+            else (str(settings.get("device_type_id")) if settings.get("device_type_id") else None)
         )
 
     def _fw_from_state(self) -> str | None:
@@ -144,11 +142,7 @@ class TraegerBaseEntity(CoordinatorEntity, RestoreEntity):
     @property
     def grill_state(self) -> dict[str, Any] | None:
         """Prefer coordinator snapshot; fallback to client cache."""
-        if (
-            getattr(self, "coordinator", None)
-            and self.coordinator
-            and self.coordinator.data
-        ):
+        if getattr(self, "coordinator", None) and self.coordinator and self.coordinator.data:
             return self.coordinator.data.get(self.grill_id)
         return self.client.get_state_for_device(self.grill_id)
 

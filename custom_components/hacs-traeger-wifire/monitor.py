@@ -10,8 +10,8 @@ from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-class TraegerGrillMonitor:
 
+class TraegerGrillMonitor:
     def __init__(
         self,
         client: Any,
@@ -119,9 +119,7 @@ class TraegerGrillMonitor:
 
         # Subscribe to coordinator updates for dynamic additions
         if self.coordinator and hasattr(self.coordinator, "async_add_listener"):
-            self._unsub = self.coordinator.async_add_listener(
-                self._on_coordinator_update
-            )
+            self._unsub = self.coordinator.async_add_listener(self._on_coordinator_update)
             _LOGGER.debug(
                 "Probe monitor subscribed to coordinator updates for grill {self.grill_id}"
             )

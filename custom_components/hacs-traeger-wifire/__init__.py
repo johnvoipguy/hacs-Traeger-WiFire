@@ -61,15 +61,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Start scheduling auto poke for each grill
     for grill in client.get_grills():
         grill_id = grill["thingName"]
-        client.schedule_auto_poke(
-            hass, grill_id, interval_seconds=15, idle_threshold_seconds=30
-        )
+        client.schedule_auto_poke(hass, grill_id, interval_seconds=15, idle_threshold_seconds=30)
 
     # Fast first refresh (snapshot only; no network)
     try:
-        await asyncio.wait_for(
-            coordinator.async_config_entry_first_refresh(), timeout=10
-        )
+        await asyncio.wait_for(coordinator.async_config_entry_first_refresh(), timeout=10)
     except Exception as err:
         _LOGGER.debug("Coordinator first refresh failed/timed out: %s", err)
 
@@ -82,14 +78,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if hass.is_running:
         await _start(None)
     else:
-        entry.async_on_unload(
-            hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _start)
-        )
+        entry.async_on_unload(hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _start))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    _LOGGER.debug(
-
-        "Forwarded setup for platforms: {PLATFORMS}")
+    _LOGGER.debug("Forwarded setup for platforms: {PLATFORMS}")
     return True
 
 
@@ -102,9 +94,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         client = data and data.get("client")
         if client and hasattr(client, "kill"):
             await client.kill()
-    _LOGGER.debug(
-        "Unloaded Traeger integration for entry: {entry.entry_id}, unload_ok={unload_ok}"
-    )
+    _LOGGER.debug("Unloaded Traeger integration for entry: {entry.entry_id}, unload_ok={unload_ok}")
     return unload_ok
 
 
