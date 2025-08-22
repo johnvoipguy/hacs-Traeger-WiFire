@@ -1,6 +1,5 @@
 # Revision: 2025-08-20
 """Base entity for Traeger."""
-
 from __future__ import annotations
 
 import logging
