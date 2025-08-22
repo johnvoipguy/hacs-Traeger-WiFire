@@ -11,6 +11,11 @@ _Component to integrate with [Traeger WiFire Grills][traeger]._
 
 
 This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance
+![Traeger WiFire Device All](Traeger-Device-All.png)
+
+![WiFire Controls](Traeger-Controls.png)
+
+![WiFire Sensors and Diag](Traeger-Sensors-Diag.png)
 
 **This component will set up the following platforms:**
 
