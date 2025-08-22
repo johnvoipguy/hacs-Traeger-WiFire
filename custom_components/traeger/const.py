@@ -1,5 +1,4 @@
 """Constants for traeger."""
-
 from homeassistant.const import UnitOfTemperature
 
 # Base component constants
