@@ -9,7 +9,7 @@ select = ["E", "F", "W", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["homeassistant"] # Example for Home Assistant modules
-known-local-folder = ["custom_components"] # Example for custom components
+known-local-folder = ["custom_components/traeger"] # Example for custom components
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 force-sort-within-sections = true
 combine-as-imports = true
