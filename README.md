@@ -5,6 +5,7 @@ Home Assistant Traeger WiFire Integration
 [![license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 [![Lint](https://github.com/johnvoipguy/hacs-Traeger-WiFire/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/johnvoipguy/hacs-Traeger-WiFire/actions/workflows/lint.yml)
+[![Quality scale: bronze](https://img.shields.io/badge/quality%20scale-bronze-%23CD7F32)](./custom_components/traeger/quality_scale.yaml)
 
 _Component to integrate with [Traeger WiFire Grills][traeger]._
 
