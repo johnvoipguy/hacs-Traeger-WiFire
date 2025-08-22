@@ -1,5 +1,4 @@
 """Coordinator for Traeger integration (push-first, poll as fallback)."""
-
 from __future__ import annotations
 
 from datetime import timedelta
