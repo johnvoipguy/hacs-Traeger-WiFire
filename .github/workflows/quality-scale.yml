@@ -16,7 +16,7 @@ jobs:
         run: |
           python - <<'PY'
           import sys, yaml, pathlib
-          p = pathlib.Path("custom_components/traeger/quality_scale.yaml")
+          p = pathlib.Path("custom_components/traeger/quality_scale.yml")
           data = yaml.safe_load(p.read_text())
           rules = data.get("rules", {})
           problems = []
