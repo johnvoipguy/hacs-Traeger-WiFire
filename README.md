@@ -10,7 +10,7 @@ Home Assistant Traeger WiFire Integration
 _Component to integrate with [Traeger WiFire Grills][traeger]._
 
 
-_This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance_
+This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance
 
 **This component will set up the following platforms:**
 
@@ -25,8 +25,8 @@ Platform | Description
 
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `hacs-traeger-wifire`.
-4. Download _all_ the files from the `custom_components/hacs-traeger-wifire/` directory (folder) in this repository.
+3. In the `custom_components` directory (folder) create a new folder called `traeger`.
+4. Download _all_ the files from the `custom_components/traeger/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
 7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Traeger"
