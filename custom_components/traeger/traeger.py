@@ -481,10 +481,15 @@ class traeger:
                 for callback in self.grill_callbacks[grill_id]:
                     if callback is not None and callable(callback):
                         _LOGGER.debug(
-                            "Executing callback on kill for grill {grill_id}: {callback.__qualname__} from {getattr(callback, '__self__', 'Unknown')}"
+                            "Executing callback on kill for grill %s: %s from %s",
+                            grill_id,
+                            getattr(callback, "__qualname__", repr(callback)),
+                            getattr(getattr(callback, "__self__", None), "__class__", type("Unknown", (), {})).__name__,
                         )
                         self.hass.async_create_task(callback())
                     else:
                         _LOGGER.error(
-                            "Skipping invalid callback on kill for grill {grill_id}: {callback}"
+                            "Skipping invalid callback on kill for grill %s: %s",
+                            grill_id,
+                            repr(callback),
                         )

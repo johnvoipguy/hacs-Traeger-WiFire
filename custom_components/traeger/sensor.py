@@ -498,11 +498,10 @@ class TraegerProbeSensor(TraegerBaseEntity, SensorEntity):
 
 
 class TraegerProbeTempSensor(TraegerBaseEntity, SensorEntity):
-    """Probe temperature sensor for a specific channel."""
+    """Probe temperature."""
 
     _attr_has_entity_name = True
-    _attr_device_class = SensorDeviceClass.TEMPERATURE
-    _attr_translation_key = "probe_temperature"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE  # ensure device class
 
     def __init__(self, client: Any, grill_id: str, channel: str, coordinator=None):
         super().__init__(client, grill_id, name=f"Probe {channel}", coordinator=coordinator)
@@ -513,6 +512,13 @@ class TraegerProbeTempSensor(TraegerBaseEntity, SensorEntity):
         await super().async_added_to_hass()
         if self.coordinator:
             self.async_on_remove(self.coordinator.async_add_listener(self.async_write_ha_state))
+
+    @property
+    def native_unit_of_measurement(self) -> str:
+        """Return the temperature unit."""
+        # Traeger client already maps units flag to HA constants
+        # Fallback to Fahrenheit to avoid None
+        return self.client.get_units_for_device(self.grill_id) or UnitOfTemperature.FAHRENHEIT
 
     @property
     def native_value(self):
