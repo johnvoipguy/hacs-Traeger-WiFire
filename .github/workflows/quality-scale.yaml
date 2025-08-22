@@ -12,6 +12,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
       - name: Validate quality_scale.yaml
         run: |
           python - <<'PY'
@@ -21,11 +25,8 @@ jobs:
           rules = data.get("rules", {})
           problems = []
           for key, val in rules.items():
-              if isinstance(val, dict):
-                  status = val.get("status", "").lower()
-              else:
-                  status = str(val).lower()
-              if status in ("todo", "", "none", "pending"):
+              status = (val.get("status") if isinstance(val, dict) else val) or ""
+              if str(status).strip().lower() in ("todo", "", "none", "pending"):
                   problems.append(key)
           if problems:
               print("Rules not completed:", ", ".join(problems))
