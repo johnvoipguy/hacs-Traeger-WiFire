@@ -1,5 +1,6 @@
 # HACS Traeger WiFire
-Home Assistant Traeger WiFire Integration 
+
+Home Assistant Traeger WiFire Integration
 
 ![Latest release](https://img.shields.io/github/v/release/johnvoipguy/hacs-Traeger-WiFire)
 [![license-shield]](LICENSE)
@@ -9,22 +10,21 @@ Home Assistant Traeger WiFire Integration
 
 _Component to integrate with [Traeger WiFire Grills][traeger]._
 
-
 This Repo was originally forked from @sebirdman repo https://github.com/sebirdman/hass_traeger. However, upon initial discovery, the Backend HASS changes were significant, and required a complete re-write of the Integration. The Base Logic was used from the forked instance
-![Traeger WiFire Device All](Traeger-Device-All.png)
+![Traeger WiFire Device All](./images/Traeger-Device-All.png)
 
-![WiFire Controls](Traeger-Controls.png)
+![WiFire Controls](./images/Traeger-Controls.png)
 
-![WiFire Sensors and Diag](Traeger-Sensors-Diag.png)
+![WiFire Sensors and Diag](./images/Traeger-Sensors-Diag.png)
 
 **This component will set up the following platforms:**
 
-Platform | Description
--- | --
-`sensor` | Shows various temperature readings from the grill or accessories
-`climate` | Allows temperature control of the grill and probe
-`number` | Allows minutes input to the timer
-`switch` | Allow SuperSmoke, Keepwarm, and connectivity switch
+| Platform  | Description                                                      |
+| --------- | ---------------------------------------------------------------- |
+| `sensor`  | Shows various temperature readings from the grill or accessories |
+| `climate` | Allows temperature control of the grill and probe                |
+| `number`  | Allows minutes input to the timer                                |
+| `switch`  | Allow SuperSmoke, Keepwarm, and connectivity switch              |
 
 ## Installation (Manual)
 
@@ -37,6 +37,7 @@ Platform | Description
 7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Traeger"
 
 ### Grill State Sensor
+
 This sensor aligns with the status values in the Traeger app.
 State | Description
 -- | --
@@ -52,6 +53,7 @@ State | Description
 `unknown` | Unkown state, report to developers
 
 ### Heating State Sensor
+
 This sensor tries to provide more useful insight into the heating status of the grill. Many of these values can be trigger off of to provide notifications that are not available in the Traeger app.
 State | Description
 -- | --
@@ -65,6 +67,7 @@ State | Description
 `cool_down` | Cool down cycle
 
 ### Probe State Sensor
+
 This sensor provides triggers for useful probe events such as being close to the target temperature or reaching the target temperature.
 State | Description
 -- | --
@@ -87,7 +90,7 @@ State | Description
 
 **If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)**
 
-***
+---
 
 [traeger]: https://www.traegergrills.com/
 [hacs]: https://github.com/custom-components/hacs
