@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  hassfest:
-    runs-on: ubuntu-latest
+  validate:
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v4
-      - uses: home-assistant/actions/hassfest@main
+        - uses: "actions/checkout@v4"
+        - uses: "home-assistant/actions/hassfest@master"
 
   hacs:
     runs-on: ubuntu-latest
