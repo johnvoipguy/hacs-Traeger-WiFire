@@ -14,7 +14,6 @@ from .traeger import traeger
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
-
 class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Blueprint."""
 
